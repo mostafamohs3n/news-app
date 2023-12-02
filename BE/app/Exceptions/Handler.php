@@ -2,7 +2,12 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -44,5 +49,40 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof ModelNotFoundException) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Resource not found',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if($e instanceof UnauthorizedHttpException || $e instanceof HttpException){
+            return \response()->json([
+                'success' => false,
+                'message' => $e->getMessage() ?: "Something went wrong.",
+                'exception_trace' => getenv('APP_DEBUG') == true ? $e->getTraceAsString() : '',
+
+            ], $e->getStatusCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return parent::render($request, $e);
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|Response
+    {
+
+        if ($request->expectsJson()) {
+            $response = [
+                'success' => false,
+                'data' => [],
+                'message' => 'You\'re not logged in. Please login and try again',
+            ];
+            return response()->json($response, Response::HTTP_UNAUTHORIZED);
+        }
+
+        return redirect()->guest('/');
     }
 }

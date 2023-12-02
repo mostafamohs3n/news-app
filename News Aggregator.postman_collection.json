@@ -1,0 +1,354 @@
+{
+	"info": {
+		"_postman_id": "8a7c3fd6-ef9e-4545-9221-a6286b53cd6c",
+		"name": "News Aggregator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23586323"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "mostafa.mohsen73@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Test1234",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{webUrl}}/api/auth/login",
+							"host": [
+								"{{webUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "mostafa.mohsen73@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Test1234",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{webUrl}}/api/auth/login",
+							"host": [
+								"{{webUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{webUrl}}/api/auth/register",
+							"host": [
+								"{{webUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CurrentUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{webUrl}}/api/auth/register",
+							"host": [
+								"{{webUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "News",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Acce",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{webUrl}}/api/news?q=test&categories=money&source=guardian",
+							"host": [
+								"{{webUrl}}"
+							],
+							"path": [
+								"api",
+								"news"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "test"
+								},
+								{
+									"key": "categories",
+									"value": "money"
+								},
+								{
+									"key": "source",
+									"value": "guardian"
+								},
+								{
+									"key": "from",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "to",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sources",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{webUrl}}/api/sources",
+							"host": [
+								"{{webUrl}}"
+							],
+							"path": [
+								"api",
+								"sources"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{webUrl}}/api/sources",
+							"host": [
+								"{{webUrl}}"
+							],
+							"path": [
+								"api",
+								"sources"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Preference",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{webUrl}}/api/user-preference",
+							"host": [
+								"{{webUrl}}"
+							],
+							"path": [
+								"api",
+								"user-preference"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "15|rGcaGeiBMjswQLnZpwWM515mqfloC06u8LNp2rxJ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"preference\": {\n        \"q\": \"Test1234\",\n        \"sources\": [\n            \"nyt-api\",\n            \"guardian-api\",\n            \"abc-news\",\n            \"abc-news-au\",\n            \"aftenposten\",\n            \"al-jazeera-english\",\n            \"ansa\",\n            \"argaam\"\n        ],\n        \"to_date\": \"2023-04-29\",\n        \"from_date\": \"2023-04-04\",\n        \"categories\": [\n            \"general\",\n            \"sports\"\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{webUrl}}/api/user-preference",
+							"host": [
+								"{{webUrl}}"
+							],
+							"path": [
+								"api",
+								"user-preference"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "webUrl",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "TOKEN",
+			"type": "string"
+		}
+	]
+}

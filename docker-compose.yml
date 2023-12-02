@@ -1,0 +1,63 @@
+version: "3.7"
+services:
+  #Database
+  db:
+    image: mysql:8.0.35
+#    platform: linux/x86_64
+    restart: unless-stopped
+    container_name: db
+    tty: true
+    environment:
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ROOT_HOST: "%" ##TODO: Check appropriate solution
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping"]
+      timeout: 20s
+      retries: 10
+    volumes:
+      - ${MYSQL_DATA}:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - app-network
+  #Laravel App
+  backend:
+    build:
+      context: ./BE
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: db
+      DB_DATABASE: news-aggregator
+      DB_USERNAME: test
+      DB_PASSWORD: Test123
+      DB_PORT: 3306
+    ports:
+      - "8000:8000"
+    user: "1000:1000"
+    volumes:
+      - ./BE:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - app-network
+  #React App
+  frontend:
+    build:
+      context: ./FE
+      dockerfile: Dockerfile
+    tty: true
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./FE:/app/frontend
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

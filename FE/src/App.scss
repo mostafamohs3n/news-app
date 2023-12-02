@@ -1,0 +1,15 @@
+#main-content{
+  margin-top:5em;
+}
+@media(max-width: 800px) {
+  #main-content-filter form > .d-flex.flex-row {
+    flex-direction: column !important;
+    .w-75{
+      width: 100% !important;
+    }
+    .btn{
+      width: 100%;
+    }
+  }
+
+}
