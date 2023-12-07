@@ -36,7 +36,7 @@ class ArticleItemAdapter
 
     public function generateId()
     {
-        return md5(trim(strtolower($this->getTitle())));
+        return md5(trim(strtolower($this->getTitle() . $this->getSource() . $this->getDate())));
     }
 
     public function getTitle()
@@ -107,7 +107,7 @@ class ArticleItemAdapter
 
     public function getCategory()
     {
-        return $this->article['pillarName'] ?? $this->article['section_name'] ?? null;
+        return $this->article['pillarName'] ?? $this->article['section_name'] ?? $this->article['category'];
     }
 
     public function getAuthor()

@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {Card} from "react-bootstrap";
 import ApiService from "../../ApiService";
+import toast from "react-hot-toast";
 
 const NewsCard = ({newsInfo}) => {
-    const {id, title, excerpt, contentUrl, thumbnail, date, source, category, author} = newsInfo;
+    const {id, title, excerpt, contentUrl, thumbnail, date, source, externalSource, category, author} = newsInfo;
 
     const [news, setNews] = useState({});
 
@@ -11,7 +12,9 @@ const NewsCard = ({newsInfo}) => {
     useEffect(() => {
         ApiService.getNews({})
             .then(response => setNews(response?.data?.data))
-            .catch(e => alert(e))
+            .catch(e => {
+                toast.error("Something went wrong while fetching data.")
+            })
     }, []);
 
     if (!news) {
@@ -26,19 +29,19 @@ const NewsCard = ({newsInfo}) => {
             />
             <Card.Body>
                 <Card.Title>{title}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">{category || source}</Card.Subtitle>
+                <Card.Subtitle className="mb-2 text-muted">{(externalSource || source || category).toUpperCase()}</Card.Subtitle>
                 <p><small>Published on {new Date(date).toLocaleDateString('en-us')}</small></p>
                 <p>{excerpt}</p>
                 <p>
                     <a
-                        className="btn btn-dark"
+                        className="btn btn-primary"
                         href={contentUrl}
                         target={"_blank"}>
-                        Read more on {source || "the news website"}
+                        Read more on <b>{externalSource || source || "the news website"}</b>
                     </a>
                 </p>
                 <Card.Footer>
-                    {typeof author == 'string' && author !== '' ? `By ${author}` : ''}
+                    <p>{typeof author == 'string' && author !== '' ? `By ${author}` : ''}</p>
                 </Card.Footer>
             </Card.Body>
         </Card>

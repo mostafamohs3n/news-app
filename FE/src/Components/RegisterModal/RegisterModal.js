@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import {Button, Form, Modal} from "react-bootstrap";
 import {Controller, useForm} from "react-hook-form";
 import {useCurrentUser} from "../../Contexts/UserContext";
 import ApiService from "../../ApiService";
+import toast from "react-hot-toast";
 
 const RegisterModal = ({show, setShow}) => {
     const {currentUser, fetchCurrentUser} = useCurrentUser();
@@ -10,12 +11,14 @@ const RegisterModal = ({show, setShow}) => {
         email: '',
         password: '',
     };
+    const [formErrors, setFormErrors] = useState(null);
     const {register, control, handleSubmit, watch, formState: {errors}} = useForm({defaultValues: defaultValues});
     const onSubmit = ({name, email, password}) => {
         ApiService.register(name, email, password)
             .then(response => {
                 if(response?.response?.data?.message){
-                    return alert(response?.response?.data?.message);
+                    toast.error(response?.response?.data?.message || "Failed to create an account");
+                    return setFormErrors(response?.response?.data?.errors);
                 }else{
                     if(response?.data?.data?.token) {
                         localStorage.setItem('userToken', response?.data?.data?.token);
@@ -26,7 +29,9 @@ const RegisterModal = ({show, setShow}) => {
                     }
                 }
             })
-            .catch(console.error);
+            .catch(error => {
+                toast.error("Something went wrong while creating an account.")
+            });
 
     };
 
@@ -64,7 +69,7 @@ const RegisterModal = ({show, setShow}) => {
                                                   isInvalid={errors?.email} placeholder="mostafa.mohsen73@gmail.com"/>
                                 )
                             }/>
-                        <Form.Text className='text-danger'>{errors?.email?.message}</Form.Text>
+                        <Form.Text className='text-danger'>{errors?.email?.message || formErrors?.email?.[0]}</Form.Text>
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Password</Form.Label>
@@ -78,7 +83,7 @@ const RegisterModal = ({show, setShow}) => {
                                                   isInvalid={errors?.email} placeholder="******"/>
                                 )
                             }/>
-                        <Form.Text className='text-danger'>{errors?.password?.message}</Form.Text>
+                        <Form.Text className='text-danger'>{errors?.password?.message || formErrors?.password?.[0]}</Form.Text>
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
@@ -86,7 +91,7 @@ const RegisterModal = ({show, setShow}) => {
                         Close
                     </Button>
                     <Button variant="primary" type="submit">
-                        Login
+                        Register
                     </Button>
                 </Modal.Footer>
             </Form>

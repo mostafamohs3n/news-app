@@ -16,6 +16,7 @@ class UserPreferenceController extends Controller
     public function index()
     {
         $userPreference = UserPreference::where('user_id', Auth::id())->first();
+
         return $this->returnSuccess(new UserPreferenceResource($userPreference));
     }
 

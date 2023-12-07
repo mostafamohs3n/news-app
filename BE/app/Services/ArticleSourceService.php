@@ -13,13 +13,25 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ArticleSourceService
 {
+
+    /**
+     * @return mixed
+     */
+    public function getAll()
+    {
+        $articleSources = ArticleSource::whereDoesntHave('externalSources')->get();
+        $articleExternalSources = ArticleExternalSource::all();
+
+        return $articleSources->concat($articleExternalSources);
+    }
+
     /**
      * @return array
      */
     public function fetchNewsApiSources(): array
     {
         $sources = [];
-        $response = Http::get(env('NEWS_API_URL') . ApiEndpointEnum::NEWS_API_SOURCES, [
+        $response = Http::get(env('NEWS_API_URL').ApiEndpointEnum::NEWS_API_SOURCES, [
             'apiKey' => env('NEWS_API_KEY')
         ]);
         $responseArray = $response->json();
@@ -35,32 +47,5 @@ class ArticleSourceService
         }
 
         return $sources;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAll(){
-        $articleSources = ArticleSource::whereDoesntHave('externalSources')->get();
-        $articleExternalSources = ArticleExternalSource::all();
-
-        return $articleSources->concat($articleExternalSources);
-    }
-
-    /**
-     * @param $sourceId
-     * @param $sources
-     * @return bool
-     */
-    public function isApplicableSource($sourceId, $sources): bool
-    {
-        if(empty($sources)){
-            return true;
-        }
-        if($sourceId == ArticleSourceEnum::NEWS_API_ID){
-            return (!empty(array_diff($sources, [ArticleSourceEnum::GUARDIAN_API_ID, ArticleSourceEnum::NYT_API_ID])));
-        }else {
-            return in_array($sourceId, $sources);
-        }
     }
 }

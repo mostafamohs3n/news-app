@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Console\Commands\ScrapNewsSources;
+use App\Console\Commands\ScrapArticles;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,11 +13,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
         // Scrapping will run every twelve hours
-//        $schedule->command(ScrapNewsSources::class)
-//                 ->everyMinute()
-//        ;
+        $schedule->command(ScrapArticles::class)
+                 ->cron('0 */12 * * *')
+        ;
     }
 
     /**

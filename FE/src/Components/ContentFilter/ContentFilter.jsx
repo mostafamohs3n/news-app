@@ -7,6 +7,7 @@ import {useAppParams} from "../../Contexts/AppContext";
 import {format} from "date-fns";
 import {useCurrentUser} from "../../Contexts/UserContext";
 import ApiService from "../../ApiService";
+import toast from "react-hot-toast";
 
 const ContentFilter = () => {
     const defaultValues = {
@@ -28,10 +29,10 @@ const ContentFilter = () => {
 
     useEffect(() => {
         setValue('q', newsQueryParams['q']);
-        if(newsQueryParams['from_date']) {
+        if (newsQueryParams['from_date']) {
             setValue('from_date', new Date(newsQueryParams['from_date']));
         }
-        if(newsQueryParams['to_date']) {
+        if (newsQueryParams['to_date']) {
             setValue('to_date', new Date(newsQueryParams['to_date']));
         }
     }, [newsQueryParams]);
@@ -40,26 +41,28 @@ const ContentFilter = () => {
 
     const handleSaveFilter = () => {
         if (!currentUser) {
-            alert("Login to save your preferred search.");
+            toast.error("Login to save your preferred search.");
             return;
         }
         const {page, ...searchParams} = newsQueryParams;
         ApiService.setUserPreferredSearch(searchParams)
             .then((response) => {
                 if (response) {
-                    alert("Saved successfully.");
+                    toast.success("Filter saved successfully.");
                 } else {
-                    alert("Something went wrong while saving preference.")
+                    toast.error("Failed to save preference.")
                 }
             })
-            .catch(console.error);
+            .catch(error => {
+                toast.error("Something went wrong while saving preferences.")
+            });
     }
 
     const onSubmit = ({q, from_date, to_date}) => {
-        if(from_date) {
+        if (from_date) {
             from_date = format(new Date(from_date), 'yyyy-MM-dd');
         }
-        if(to_date) {
+        if (to_date) {
             to_date = format(new Date(to_date), 'yyyy-MM-dd');
         }
         setNewsQueryParams((prevState) => {
@@ -76,7 +79,7 @@ const ContentFilter = () => {
                 <Card.Body>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <div className="d-flex flex-row w-100">
-                            <div className="p-2 w-75">
+                            <div className="p-2 w-50">
                                 <Form.Label>&nbsp;</Form.Label>
                                 <Form.Label className="d-lg-none">Keyword</Form.Label>
                                 <Controller
@@ -105,7 +108,7 @@ const ContentFilter = () => {
                                                 startDate={getValues('from_date')}
                                                 endDate={getValues('to_date')}
                                                 dateFormat="yyyy-MM-dd"
-                                                isClearable
+                                                isClearable={getValues('from_date') ? true : false}
                                                 customInput={
                                                     <input
                                                         className="form-control form-control-lg"
@@ -133,7 +136,7 @@ const ContentFilter = () => {
                                                 endDate={getValues('to_date')}
                                                 minDate={getValues('from_date')}
                                                 dateFormat="yyyy-MM-dd"
-                                                isClearable
+                                                isClearable={getValues('to_date') ? true : false}
                                                 customInput={
                                                     <input
                                                         className="form-control form-control-lg"
@@ -145,21 +148,17 @@ const ContentFilter = () => {
                                         )
                                     }/>
                             </div>
-                            <div className="p-2">
+                            <div className="p-2 pt-3">
                                 <Form.Label>&nbsp;</Form.Label>
-                                <Button type="submit" size="lg" variant="warning">Search</Button>
+                                <Button type="submit" size="md" variant="outline-primary">Search</Button>
+                            </div>
+                            <div className="p-2 pt-3">
+                                <Form.Label>&nbsp;</Form.Label>
+                                <Button onClick={handleSaveFilter} variant="outline-dark" size="md">
+                                    Save
+                                </Button>
                             </div>
                         </div>
-                        <div className="d-flex justify-content-end px-2">
-                            <Button onClick={handleSaveFilter} variant="outline-dark" size="sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                     className="bi bi-save" viewBox="0 0 16 16">
-                                    <path
-                                        d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
-                                </svg>
-                                {` `}Save Filter</Button>
-                        </div>
-
                     </Form>
                 </Card.Body>
             </Card>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ArticleAuthorController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\ArticleCategoryController;
 use App\Http\Controllers\Api\ArticleController;
@@ -34,3 +35,4 @@ Route::middleware('guest')->group(function(){
 Route::get('articles', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('sources', [ArticleSourceController::class, 'index'])->name('sources.index');
 Route::get('categories', [ArticleCategoryController::class, 'index'])->name('categories.index');
+Route::get('authors', [ArticleAuthorController::class, 'index'])->name('categories.index');

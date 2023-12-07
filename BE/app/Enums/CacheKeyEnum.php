@@ -4,6 +4,6 @@ namespace App\Enums;
 
 class CacheKeyEnum
 {
-    const SOURCES = 'news_sources';
+    const SOURCES = 'articles_sources';
     const ARTICLES = 'articles';
 }

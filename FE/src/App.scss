@@ -11,5 +11,8 @@
       width: 100%;
     }
   }
-
+}
+:root, [data-bs-theme=light]{
+  --bs-emphasis-color: #000000 !important;
+  --bs-emphasis-color-rgb: 255,255,255 !important;
 }

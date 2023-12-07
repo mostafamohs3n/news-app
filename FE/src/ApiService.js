@@ -17,6 +17,11 @@ class ApiService {
             .then(response => response)
             .catch(error => error)
     }
+    getNewsAuthors = () => {
+        return axios.get(generateEndpointUrl('authors'))
+            .then(response => response)
+            .catch(error => error)
+    }
 
     getNews = (params) => {
         return axios.get(generateEndpointUrl('articles'), {

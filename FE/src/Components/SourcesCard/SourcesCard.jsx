@@ -3,9 +3,9 @@ import {Card, Col, Form} from "react-bootstrap";
 import ApiService from "../../ApiService";
 import Select from "react-select";
 import {useAppParams} from "../../Contexts/AppContext";
+import toast from "react-hot-toast";
 
 const SourcesCard = ({}) => {
-
     const [sources, setSources] = useState([]);
     const [selectedSources, setSelectedSources] = useState([]);
     const [selectedExternalSources, setSelectedExternalSources] = useState([]);
@@ -17,7 +17,10 @@ const SourcesCard = ({}) => {
             .then(response => {
                 setSources(response?.data?.data)
             })
-            .catch(e => console.log(e))
+            .catch(e => {
+                console.log(e)
+                toast.error("Something went wrong while fetching data.")
+            })
     }, []);
 
     useEffect(() => {
@@ -40,22 +43,26 @@ const SourcesCard = ({}) => {
     if (!sources || !sources.length) {
         return null;
     }
+
     const getDefaultValue = () => {
-        return sources.filter((source) => selectedSources.includes(source.id));
+        let sourcesValue = sources.filter((source) => !source.external_source_parent_id && selectedSources.includes(source.id));
+        let externalSourcesValue = sources.filter((source) => source.external_source_parent_id > 0 && selectedExternalSources.includes(source.id));
+
+        return [...sourcesValue, ...externalSourcesValue] ?? [];
     }
 
     const handleSelectChange = (values) => {
-        let sourcesSelected = new Set(), externalSourcesSelected = new Set();
-        values.map( val => {
-            if(val.external_source_parent_id > 0){
-                sourcesSelected.add(val.external_source_parent_id);
+        let sourcesSelected = new Set(),
+            externalSourcesSelected = new Set();
+        values.map(val => {
+            if (val.external_source_parent_id > 0) {
                 externalSourcesSelected.add(val.id);
-            }else{
+            } else {
                 sourcesSelected.add(val.id);
             }
-            setSelectedSources([...sourcesSelected]);
-            setSelectedExternalSources([...externalSourcesSelected]);
         })
+        setSelectedSources([...sourcesSelected]);
+        setSelectedExternalSources([...externalSourcesSelected]);
     }
 
     return (

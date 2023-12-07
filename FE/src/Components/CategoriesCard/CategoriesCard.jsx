@@ -3,6 +3,7 @@ import {Card, Col, Form} from "react-bootstrap";
 import ApiService from "../../ApiService";
 import Select from "react-select";
 import {useAppParams} from "../../Contexts/AppContext";
+import toast from "react-hot-toast";
 
 const CategoriesCard = ({}) => {
 
@@ -15,7 +16,10 @@ const CategoriesCard = ({}) => {
             .then(response => {
                 setCategories(response?.data?.data)
             })
-            .catch(e => alert(e))
+            .catch(e => {
+                console.log(e);
+                toast.error("Something went wrong while fetching data.")
+            })
     }, []);
 
 

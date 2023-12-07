@@ -1,5 +1,5 @@
-### News Aggregator
- **This is a _dockerized_ Laravel/React Full Stack application for a news aggregator that fetches news from 3 different sources.**
+### News
+ **This is a _dockerized_ Laravel/React Full Stack application for a news app that fetches news from 3 different sources.**
 
 - News API
 - Guardian API
@@ -30,7 +30,7 @@
 - Git clone this repository
 #### Installation Steps
 - Cd into `news-aggregator` and check `.env` file variable MYSQL_DATA to match your system's (Note: using Mysql Version **8.0.35**)
-  - You might need to create a database named `news-aggregator`
+  - You might need to create a database named `news`
 - directory and run Command: `docker-compose up -d`
 - Run migration using command: `docker exec -it news_backend_container php artisan migrate`
 - Access Frontend URL using `localhost:3000`

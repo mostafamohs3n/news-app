@@ -1,6 +1,4 @@
 import React from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.scss';
 import Header from "./Components/Header/Header";
 import Sidebar from "./Components/Sidebar/Sidebar";
 import {Container, Row} from "react-bootstrap";
@@ -9,12 +7,14 @@ import {CurrentUserProvider} from "./Contexts/UserContext";
 import ContentFilter from "./Components/ContentFilter/ContentFilter";
 import {AppProvider} from "./Contexts/AppContext";
 import Footer from "./Components/Footer/Footer";
+import {Toaster} from "react-hot-toast";
 
 
 function App() {
     return (
         <AppProvider>
             <CurrentUserProvider>
+                <div><Toaster/></div>
                 <div className="App">
                     <Header/>
                     <div id="main-content">

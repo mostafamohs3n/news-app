@@ -10,6 +10,7 @@ export const AppProvider = ({children}) => {
         sources: [],
         external_sources: [],
         categories: [],
+        authors: [],
     })
 
     return (

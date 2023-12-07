@@ -29,7 +29,7 @@ class ArticleItemDto
         public readonly ?array $externalSourceData,
         public readonly ?string $source,
         public readonly ?string $sourceName,
-        public readonly ?string $category,
+        public ?string $category,
         public readonly ?string $author
     ) {
     }

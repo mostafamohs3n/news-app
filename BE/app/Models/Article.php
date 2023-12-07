@@ -59,7 +59,7 @@ class Article extends Model
         if (empty($sources)) {
             return $query;
         }
-        return $query->whereIn('article_source_id', $sources);
+        return $query->WhereIn('article_source_id', $sources);
     }
 
     public function scopeExternalSources($query, $externalSources)
@@ -67,7 +67,14 @@ class Article extends Model
         if (empty($externalSources)) {
             return $query;
         }
-        return $query->whereIn('article_external_source_id', $externalSources);
+        return $query->orWhereIn('article_external_source_id', $externalSources);
+    }
+    public function scopeAuthors($query, $authors)
+    {
+        if (empty($authors)) {
+            return $query;
+        }
+        return $query->orWhereIn('author', $authors);
     }
 
     public function scopeCategories($query, $categories, $sources)
@@ -75,7 +82,7 @@ class Article extends Model
         if (empty($categories)) {
             return $query;
         }
-        $categoriesList = ArticleCategory::whereIn('identifier', $categories);
+        $categoriesList = ArticleCategory::whereIn('name', $categories);
         if (!empty($sources)) {
             $categoriesList = $categoriesList->whereIn('article_source_id', $sources);
         }

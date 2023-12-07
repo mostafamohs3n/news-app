@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import {Button, Form, Modal} from "react-bootstrap";
 import {Controller, useForm} from "react-hook-form";
 import {useCurrentUser} from "../../Contexts/UserContext";
 import ApiService from "../../ApiService";
+import toast from "react-hot-toast";
 
 const LoginModal = ({show, setShow}) => {
     const {currentUser, fetchCurrentUser} = useCurrentUser();
@@ -10,13 +11,14 @@ const LoginModal = ({show, setShow}) => {
         email: '',
         password: '',
     };
+    const [formErrors, setFormErrors] = useState(null);
     const {register, control, handleSubmit, watch, formState: {errors}} = useForm({defaultValues: defaultValues});
     const onSubmit = ({email, password}) => {
         ApiService.login(email, password)
             .then((response, errors) => {
-                console.log(response, errors);
                 if(!response || response?.response?.data?.message){
-                    return alert(response?.response?.data?.message || "E");
+                    toast.error(response?.response?.data?.message || "Failed to login");
+                    return setFormErrors(response?.response?.data?.errors);
                 }else{
                     if(response?.data?.data?.token) {
                         localStorage.setItem('userToken', response?.data?.data?.token);
@@ -28,8 +30,7 @@ const LoginModal = ({show, setShow}) => {
                 }
             })
             .catch((e) => {
-                alert("TEST!");
-                alert(JSON.stringify(e));
+
             });
 
     };
@@ -54,7 +55,7 @@ const LoginModal = ({show, setShow}) => {
                                                   isInvalid={errors?.email} placeholder="mostafa.mohsen73@gmail.com"/>
                                 )
                             }/>
-                        <Form.Text className='text-danger'>{errors?.email?.message}</Form.Text>
+                        <Form.Text className='text-danger'>{errors?.email?.message || formErrors?.email?.[0]}</Form.Text>
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Password</Form.Label>
@@ -68,7 +69,7 @@ const LoginModal = ({show, setShow}) => {
                                                   isInvalid={errors?.email} placeholder="******"/>
                                 )
                             }/>
-                        <Form.Text className='text-danger'>{errors?.password?.message}</Form.Text>
+                        <Form.Text className='text-danger'>{errors?.password?.message  || formErrors?.password?.[0]}</Form.Text>
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>

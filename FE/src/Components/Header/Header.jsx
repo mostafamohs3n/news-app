@@ -4,6 +4,7 @@ import {useCurrentUser} from "../../Contexts/UserContext";
 import LoginModal from "../LoginModal/LoginModal";
 import ApiService from "../../ApiService";
 import RegisterModal from "../RegisterModal/RegisterModal";
+import toast from "react-hot-toast";
 
 const Header = ({}) => {
     const {currentUser, fetchCurrentUser} = useCurrentUser();
@@ -18,20 +19,22 @@ const Header = ({}) => {
                     fetchCurrentUser();
                     window.location.reload();
                 }else{
-                    alert("Something went wrong while logging out.")
+                    toast.error("Something went wrong while logging out.")
                 }
             })
-            .catch(console.error);
+            .catch(error => {
+                toast.error("Something went wrong while logging out.")
+            });
     }
     return (
         <>
-            <Navbar bg="light" expand="lg" className="mb-4">
+            <Navbar bg="primary" expand="lg" className="mb-4 p-2">
                 <Container>
-                    <Navbar.Brand href="#home">News-Aggregator</Navbar.Brand>
+                    <Navbar.Brand href="#home"><b>News</b></Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link href="/">Neweees Feed</Nav.Link>
+                            <Nav.Link href="/">Home</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                     <Navbar.Collapse className="justify-content-end">
