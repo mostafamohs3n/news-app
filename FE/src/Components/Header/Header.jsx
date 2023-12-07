@@ -38,17 +38,19 @@ const Header = ({}) => {
                         </Nav>
                     </Navbar.Collapse>
                     <Navbar.Collapse className="justify-content-end">
-                        {currentUser &&
-                            <Navbar.Text>
-                                Signed in as: <a href="#login">{currentUser?.name}</a>
-                                <Button className='ms-2' variant='link' size='sm' onClick={handleLogout}>Logout</Button>
-                            </Navbar.Text>
-                        }
+                        {currentUser ?
+                            <>
+                                <Nav>
+                                    <Nav.Link>Signed in as: {currentUser?.name}</Nav.Link>
+                                    <Nav.Link className={'text-bg-light'} onClick={handleLogout}>Logout</Nav.Link>
+                                </Nav>
+                            </>
+                        : null}
                         {
                             !currentUser
                                 ? <Nav>
-                                    <Nav.Link onClick={() => setShowLoginModal(true)}>Login</Nav.Link>
-                                    <Nav.Link onClick={() => setShowRegisterModal(true)}>Register</Nav.Link>
+                                    <Nav.Link className={'text-bg-light'} onClick={() => setShowLoginModal(true)}>Login</Nav.Link>
+                                    <Nav.Link className={'text-bg-light mx-2'} onClick={() => setShowRegisterModal(true)}>Register</Nav.Link>
                                 </Nav>
                                 : null
                         }

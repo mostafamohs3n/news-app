@@ -4,6 +4,7 @@ namespace App\Services\Article;
 
 use App\Enums\ApiEndpointEnum;
 use App\Enums\ArticleSourceEnum;
+use App\Enums\CacheTtlEnum;
 use App\Helpers\ResponseUtilities;
 use App\Helpers\Utilities;
 use App\Interfaces\ArticleFetcher;
@@ -61,7 +62,7 @@ class ArticleFetcherExternal implements ArticleFetcher
         ];
 
         $cacheKey = Utilities::getArticlesCacheKey($requestParams);
-        return Cache::remember($cacheKey, 3600, function () use ($requestParams, $sources) {
+        return Cache::remember($cacheKey, CacheTtlEnum::TTL_1_HOUR, function () use ($requestParams, $sources) {
             $mergedArticles = [];
             if ($this->isApplicableSource(ArticleSourceEnum::NEWS_API_ID, $sources)) {
                 $newsApiResponse = $this->fetchSourceArticles(ArticleSourceEnum::NEWS_API_ID, $requestParams);

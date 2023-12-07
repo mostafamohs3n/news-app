@@ -96,7 +96,7 @@ class ScrapArticles extends Command
                     }
 
                 } catch (\Throwable $exception){
-                    Log::error(sprintf('[%s:%s] - Something went wrong while attempting to scrap news articles from source "%s"', $articleSource->identifier), [
+                    Log::error(sprintf('[%s:%s] - Something went wrong while attempting to scrap news articles from source "%s"', __CLASS__, __FUNCTION__, $articleSource->identifier), [
                         'exception_msg' => $exception->getMessage(),
                         'exception_trace' => $exception->getTraceAsString(),
                         'article_source_id' => $articleSource->id,

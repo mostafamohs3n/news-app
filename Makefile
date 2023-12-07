@@ -1,5 +1,5 @@
 up:
-	docker-compose up -d $(SERVICE)
+	docker-compose up -d
 build:
 	docker-compose build --no-cache --force-rm
 stop:
@@ -7,8 +7,9 @@ stop:
 ps:
 	docker-compose ps
 backend-setup:
-	docker exec -it news_backend_container bash -c "cd /var/www/html && cp .env.example .env"
-	docker exec -it news_backend_container bash -c "cd /var/www/html && php artisan key:generate"
+	docker exec -it news_backend_container bash -c "php artisan key:generate"
+	docker exec -it news_backend_container bash -c "php artisan migrate"
+	docker exec -it news_backend_container bash -c "php artisan db:seed"
 backend-migrate:
 	docker exec -it news_backend_container bash -c "php artisan migrate"
 backend-seed:
