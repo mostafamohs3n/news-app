@@ -7,6 +7,7 @@ export const CurrentUserProvider = ({children}) => {
     const [currentUser, setCurrentUser] = React.useState(null)
 
     const fetchCurrentUser = () => {
+        if(!currentUser){return;}
         ApiService.getUser()
             .then(response => setCurrentUser(response?.data?.data?.user))
             .catch(console.error);

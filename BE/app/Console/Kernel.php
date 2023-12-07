@@ -15,9 +15,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         // Scrapping will run every twelve hours
-        $schedule->command(ScrapNewsSources::class)
-                 ->cron('0 */12 * * *')
-        ;
+//        $schedule->command(ScrapNewsSources::class)
+//                 ->everyMinute()
+//        ;
     }
 
     /**

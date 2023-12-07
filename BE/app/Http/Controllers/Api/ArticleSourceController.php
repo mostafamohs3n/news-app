@@ -24,7 +24,7 @@ class ArticleSourceController extends Controller
 
         $cacheKey = CacheKeyEnum::SOURCES;
         $sourcesList = Cache::remember($cacheKey, CacheTtlEnum::TTL_1_DAY, function () {
-            return $this->articleSourceService->getSourcesList();
+            return $this->articleSourceService->getAll();
         });
 
         return $this->returnSuccess(ArticleSourceResource::collection($sourcesList));

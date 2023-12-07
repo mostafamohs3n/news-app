@@ -18,7 +18,7 @@ class ArticleCategoryController extends Controller
      */
     public function index()
     {
-        $articleCategories = $this->articleCategoryService->getCategories();
+        $articleCategories = $this->articleCategoryService->getAll();
 
         return $this->returnSuccess(ArticleCategoryResource::collection($articleCategories));
     }

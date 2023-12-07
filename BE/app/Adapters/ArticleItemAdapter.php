@@ -2,6 +2,7 @@
 
 namespace App\Adapters;
 
+use App\DTO\ArticleItemDto;
 use App\Enums\ArticleSourceEnum;
 use App\Helpers\Utilities;
 use Illuminate\Support\Str;
@@ -15,7 +16,7 @@ class ArticleItemAdapter
         $this->article = $article;
     }
 
-    public function adapt()
+    public function formatToArray(): array
     {
         return [
             'id' => $this->generateId(),
@@ -27,33 +28,34 @@ class ArticleItemAdapter
             'externalSource' => $this->getExternalSource(),
             'externalSourceData' => $this->getExternalSourceData(),
             'source' => $this->getSource(),
+            'source_name' => $this->getSource(),
             'category' => $this->getCategory(),
             'author' => $this->getAuthor(),
         ];
     }
 
-    private function generateId()
+    public function generateId()
     {
         return md5(trim(strtolower($this->getTitle())));
     }
 
-    private function getTitle()
+    public function getTitle()
     {
         return $this->article['title'] ?? $this->article['webTitle'] ?? $this->article['headline']['main'] ?? 'N/A';
     }
 
-    private function getExcerpt()
+    public function getExcerpt()
     {
         $excerpt = strip_tags($this->article['description'] ?? $this->article['fields']['body'] ?? $this->article['snippet'] ?? '');
         return !empty($excerpt) ? Utilities::getExcerpt($excerpt) : 'Content Unavailable';
     }
 
-    private function getContentUrl()
+    public function getContentUrl()
     {
         return $this->article['url'] ?? $this->article['webUrl'] ?? $this->article['web_url'] ?? null;
     }
 
-    private function getThumbnail()
+    public function getThumbnail()
     {
         return $this->article['urlToImage'] ?? $this->article['fields']['thumbnail'] ?? $this->getDefaultThumbnail();
     }
@@ -65,7 +67,7 @@ class ArticleItemAdapter
             : null;
     }
 
-    private function getExternalSource()
+    public function getExternalSource()
     {
         return $this->article['source']['name'] ?? (
         isset($this->article['pillarName'])
@@ -76,9 +78,17 @@ class ArticleItemAdapter
         );
     }
 
-    private function getExternalSourceData(){
+    public function getDate()
+    {
+        $date = $this->article['publishedAt'] ?? $this->article['webPublicationDate'] ?? $this->article['pub_date'] ?? null;
+
+        return \Carbon\Carbon::parse($date)->format('Y-m-d H:i:s');
+    }
+
+    public function getExternalSourceData()
+    {
         $externalSourceData = [];
-        if(!empty($this->article['source']) && is_array($this->article['source'])){
+        if (!empty($this->article['source']) && is_array($this->article['source'])) {
             $externalSourceData = [
                 'id' => $this->article['source']['id'] ?? Str::slug($this->getExternalSource()),
                 'name' => $this->article['source']['name'],
@@ -87,14 +97,7 @@ class ArticleItemAdapter
         return $externalSourceData;
     }
 
-    private function getDate()
-    {
-        $date = $this->article['publishedAt'] ?? $this->article['webPublicationDate'] ?? $this->article['pub_date'] ?? null;
-
-        return \Carbon\Carbon::parse($date)->format('Y-m-d H:i:s');
-    }
-
-    private function getSource()
+    public function getSource()
     {
         $apiSrc = $this->getExternalSource();
         return in_array($apiSrc, [ArticleSourceEnum::GUARDIAN_API_ID, ArticleSourceEnum::NYT_API_ID])
@@ -102,15 +105,38 @@ class ArticleItemAdapter
             : ArticleSourceEnum::NEWS_API_ID;
     }
 
-    private function getCategory()
+    public function getCategory()
     {
         return $this->article['pillarName'] ?? $this->article['section_name'] ?? null;
     }
 
-    private function getAuthor()
+    public function getAuthor()
     {
         //@TODO: This needs more accurate normalization
         $author = $this->article['author'] ?? $this->article['byline']['original'] ?? $this->article['byline'] ?? null;
-        return trim(current(explode(',', $author)));
+        $author = is_array($author) ? $author[0] ?? $author['person'] ?? '' : $author;
+        if (empty($author)) {
+            return '';
+        }
+        $author = trim(current(explode(',', $author)));
+        return str_replace('By ', '', $author);
+    }
+
+    public function toDto(): ArticleItemDto
+    {
+        return new ArticleItemDto(
+            id: $this->generateId(),
+            title: $this->getTitle(),
+            excerpt: $this->getExcerpt(),
+            contentUrl: $this->getContentUrl(),
+            thumbnail: $this->getThumbnail(),
+            date: $this->getDate(),
+            externalSource: $this->getExternalSource(),
+            externalSourceData: $this->getExternalSourceData(),
+            source: $this->getSource(),
+            sourceName: $this->getSource(),
+            category: $this->getCategory(),
+            author: $this->getAuthor()
+        );
     }
 }

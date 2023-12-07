@@ -7,7 +7,10 @@ use App\Models\ArticleCategory;
 class ArticleCategoryService
 {
 
-    public function getCategories()
+    /**
+     * @return mixed
+     */
+    public function getAll(): mixed
     {
         return ArticleCategory::select('name')->groupBy('name')->get();
     }

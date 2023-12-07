@@ -37,7 +37,10 @@ class ArticleSourceService
         return $sources;
     }
 
-    public function getSourcesList(){
+    /**
+     * @return mixed
+     */
+    public function getAll(){
         $articleSources = ArticleSource::whereDoesntHave('externalSources')->get();
         $articleExternalSources = ArticleExternalSource::all();
 

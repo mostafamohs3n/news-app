@@ -3,12 +3,15 @@ import ApiService from "../../ApiService";
 import NewsCard from "./NewsCard";
 import {useAppParams} from "../../Contexts/AppContext";
 import {Alert, Pagination} from "react-bootstrap";
+import {useCurrentUser} from "../../Contexts/UserContext";
 
 const NewsList = ({}) => {
     const [newsList, setNewsList] = useState({});
     const [userPreferredSearch, setUserPreferredSearch] = useState({});
     const {newsQueryParams, setNewsQueryParams} = useAppParams();
     const [page, setPage] = useState(1);
+    const {currentUser} = useCurrentUser();
+
 
     useEffect(() => {
         ApiService.getNews({...newsQueryParams, page})
@@ -28,17 +31,13 @@ const NewsList = ({}) => {
 
     useEffect( () => {
         //attempt to get current user's preference
-        ApiService.getUserPreferredSearch()
-            .then(response =>
-                setUserPreferredSearch(response?.data?.data?.preference)
-            )
-            .catch(console.error);
-        // load news for first time.
-        ApiService.getNews({...newsQueryParams, page})
-            .then(response => {
-                setNewsList(response?.data?.data)
-            })
-            .catch(e => alert(e))
+        if(currentUser) {
+            ApiService.getUserPreferredSearch()
+                .then(response =>
+                    setUserPreferredSearch(response?.data?.data?.preference)
+                )
+                .catch(console.error);
+        }
     }, []);
 
     if (!newsList || !newsList.length) {

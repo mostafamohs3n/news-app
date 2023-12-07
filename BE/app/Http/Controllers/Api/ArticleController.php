@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\ArticleSourceEnum;
 use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ArticleResource;
 use App\Services\ArticleService;
 use App\Services\ArticleSourceService;
 use Illuminate\Http\Request;
@@ -26,9 +27,14 @@ class ArticleController extends Controller
     {
         $categories = $request->get('categories', []) ?? [];
         $sources = $request->get('sources', []) ?? [];
+        //@TODO: Replace with querying the database.
+
+        //@TODO: If db query returned empty, then query the external API directly
+        //@TODO: Determine if we should save the records directly or set up a job to do so.
+        //@TODO: Check how we can work with two article resources or one that handles both cases.
         $requestParams = [
-            'queryString' => $request->get('q'),
-            'queryStringWithCategories' => $this->articleService->buildQueryStringWithCategories($request->get('q'), $categories),
+            'queryString' => $request->get('q', ''),
+            'queryStringWithCategories' => $this->articleService->buildQueryStringWithCategories((string)$request->get('q', ''), $categories),
             'categories' => $categories ?? [],
             'sources' => array_filter($request->get('sources', [])),
             'pageSize' => 10,
@@ -44,16 +50,19 @@ class ArticleController extends Controller
                 $mergedArticles = array_merge($mergedArticles, $newsApiResponse);
             }
             if ($this->sourceService->isApplicableSource(ArticleSourceEnum::GUARDIAN_API_ID, $sources)) {
-//                $guardianApiResponse = $this->articleService->fetchArticles(ArticleSourceEnum::GUARDIAN_API_ID, $requestParams);
-//                $mergedArticles = array_merge($mergedArticles, $guardianApiResponse);
+                $guardianApiResponse = $this->articleService->fetchArticles(ArticleSourceEnum::GUARDIAN_API_ID, $requestParams);
+                $mergedArticles = array_merge($mergedArticles, $guardianApiResponse);
             }
             if ($this->sourceService->isApplicableSource(ArticleSourceEnum::NYT_API_ID, $sources)) {
-//                $nytApiResponse = $this->articleService->fetchArticles(ArticleSourceEnum::NYT_API_ID, $requestParams);
-//                $mergedArticles = array_merge($mergedArticles, $nytApiResponse);
+                $nytApiResponse = $this->articleService->fetchArticles(ArticleSourceEnum::NYT_API_ID, $requestParams);
+                $mergedArticles = array_merge($mergedArticles, $nytApiResponse);
             }
-            return $this->articleService->adaptArticlesFormat($mergedArticles);
+            $articles = $this->articleService->adaptArticlesFormat($mergedArticles);
+            $this->articleService->sortArticles($articles);
+
+            return $articles;
         });
 
-        return $this->returnSuccess(['requestParams' => $requestParams, 'articles' => $articles]);
+        return $this->returnSuccess(ArticleResource::collection($articles));
     }
 }
