@@ -70,8 +70,8 @@ class ArticleService
                 'apiKey' => env('NEWS_API_KEY'),
                 'q' => urlencode(empty($requestParams['categories']) ? $requestParams['queryString'] : $requestParams['queryStringWithCategories']),
                 'sources' => !empty($newsApiSources) ? implode(',', $newsApiSources) : null,
-                'from' => $requestParams['fromDate'] ?: null, //format: YYYY-MM-DD
-                'to' => $requestParams['toDate'] ?: null, //format: YYYY-MM-DD
+                'from' => $requestParams['fromDate'] ?? null, //format: YYYY-MM-DD
+                'to' => $requestParams['toDate'] ?? null, //format: YYYY-MM-DD
                 'page' => $requestParams['page'],
                 'pageSize' => min(100, $requestParams['pageSize']),
                 'language' => 'en',
@@ -80,8 +80,8 @@ class ArticleService
                 'api-key' => env('GUARDIAN_API_KEY'),
                 'q' => $requestParams['queryString'],
                 'section' => !empty($requestParams['categories']) ? implode('|', $requestParams['categories']) : null,
-                'from-date' => $requestParams['fromDate'] ?: null,
-                'to-date' => $requestParams['toDate'] ?: null,
+                'from-date' => $requestParams['fromDate'] ?? null,
+                'to-date' => $requestParams['toDate'] ?? null,
                 'page' => $requestParams['page'],
                 'page-size' => min(50, $requestParams['pageSize']),
                 'show-fields' => 'body,thumbnail,trailText,byline',

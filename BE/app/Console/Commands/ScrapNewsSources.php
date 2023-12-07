@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\DTO\ArticleItemDto;
+use App\Enums\ArticleSourceEnum;
 use App\Models\ArticleSource;
 use App\Services\ArticleService;
 use Illuminate\Console\Command;
@@ -44,11 +45,14 @@ class ScrapNewsSources extends Command
                 'queryString' => $queryString,
                 'pageSize' => self::PAGE_SIZE,
                 'page' => $pageCounter,
-                'fromDate' => now()->subDays(40)->startOfDay()->format('Y-m-d'),
-                'toDate' => now()->endOfDay()->format('Y-m-d'),
+                'fromDate' => now()->subDays(30)->startOfDay()->format('Y-m-d'),
+                'toDate' => null,
             ];
             $articleSources = ArticleSource::all();
             foreach ($articleSources as $articleSource) {
+                if($articleSource->identifier != ArticleSourceEnum::NEWS_API_ID){
+                    continue;
+                }
                 $categories = $articleSource->categories->pluck('name')->toArray();
                 $requestParams['categories'] = $categories;
                 $requestParams['queryStringWithCategories'] = $this->articleService->buildQueryStringWithCategories(
@@ -56,6 +60,8 @@ class ScrapNewsSources extends Command
                     $categories
                 );
                 $fetchedArticles = $this->articleService->fetchArticles($articleSource->identifier, $requestParams);
+//                dump($fetchedArticles);
+                dump(count($fetchedArticles));
                 $adaptedArticles = $this->articleService->adaptArticlesFormat($fetchedArticles);
                 Log::info(sprintf('[%s] Scrapped (%d) articles from "%s" source', __CLASS__, count($adaptedArticles), $articleSource->identifier));
 

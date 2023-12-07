@@ -16,7 +16,7 @@ const NewsList = ({}) => {
     useEffect(() => {
         ApiService.getNews({...newsQueryParams, page})
             .then(response => {
-                setNewsList(response?.data?.data)
+                setNewsList(response?.data?.data?.data)
             })
             .catch(console.error)
             .catch(e => alert(e))

@@ -14,7 +14,6 @@ class ArticleResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        //@TODO: handle fetching from database.
         return $this->formatToArray();
     }
 }

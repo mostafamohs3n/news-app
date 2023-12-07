@@ -8,6 +8,7 @@ export const AppProvider = ({children}) => {
         from_date: null,
         to_date: null,
         sources: [],
+        external_sources: [],
         categories: [],
     })
 

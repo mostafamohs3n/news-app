@@ -38,7 +38,7 @@ const NewsCard = ({newsInfo}) => {
                     </a>
                 </p>
                 <Card.Footer>
-                    {typeof author == 'string' ? (author.toLowerCase().includes('by ') ? author : `By ${author}`) : ''}
+                    {typeof author == 'string' && author !== '' ? `By ${author}` : ''}
                 </Card.Footer>
             </Card.Body>
         </Card>
