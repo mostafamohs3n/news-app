@@ -32,5 +32,5 @@
 - Cd into `news-aggregator` and check `.env` file variable MYSQL_DATA to match your system's (Note: using Mysql Version **8.0.35**)
   - You might need to create a database named `news-aggregator`
 - directory and run Command: `docker-compose up -d`
-- Run migration using command: `docker exec -it news-aggregator_backend_1 php artisan migrate`
+- Run migration using command: `docker exec -it news_backend_container php artisan migrate`
 - Access Frontend URL using `localhost:3000`

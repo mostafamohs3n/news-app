@@ -1,12 +1,14 @@
-FROM node:16.19.1-alpine
+FROM node:21.3-alpine
 
-WORKDIR /app/frontend
-COPY ./ /app/frontend
+WORKDIR /app
 
+# Copy important files
+COPY package.json .
+COPY ./docker ./docker
 
-RUN apk update && apk add bash
-RUN npm install
-
-
+# Expose port 3000
 EXPOSE 3000
-CMD ["npm", "start"]
+
+# Entrypoint that does npm install and start
+RUN chmod +x "docker/entrypoint.sh"
+ENTRYPOINT ["sh", "docker/entrypoint.sh"]
